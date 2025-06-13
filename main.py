@@ -65,8 +65,7 @@ def get_mol_from_inchi(inchi_str):
             raise ValueError("Error: RDKit molecule has no conformer after embedding.")
 
         atoms = Atoms(symbols=symbols, positions=positions)
-        atoms.set_cell([25, 25, 25])  # Default cell for some calculations
-        atoms.center()
+        atoms.center(vacuum=10)  # Create a cell with 10 Å of space around molecule
 
         return atoms, inchi_key
 
@@ -81,8 +80,7 @@ def optimise_mol(atoms, logfile, trajfile):
     dftd4_calc = get_dftd4_calc()
 
     if atoms.get_cell().volume < 1e-9:
-        atoms.set_cell([25, 25, 25])
-        atoms.center()
+        atoms.center(vacuum=10)  # Create a cell with 10 Å of space around molecule
 
     atoms.calc = SumCalculator([dftd4_calc, gpaw_calc])
 
